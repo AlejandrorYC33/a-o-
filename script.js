@@ -58,22 +58,17 @@ function calculateTime() {
     const now = new Date();
     const start = new Date(startDate);
     
+    // Calcular la diferencia total en milisegundos
+    const diffTime = now - start;
+    
+    // Calcular el total de días transcurridos
+    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
     // Calcular años
     let years = now.getFullYear() - start.getFullYear();
     
     // Calcular meses
     let months = now.getMonth() - start.getMonth();
-    
-    // Calcular días
-    let days = now.getDate() - start.getDate();
-    
-    // Ajustar si el día actual es menor que el día de inicio
-    if (days < 0) {
-        months--;
-        // Obtener el último día del mes anterior
-        const lastDayOfPrevMonth = new Date(now.getFullYear(), now.getMonth(), 0).getDate();
-        days = lastDayOfPrevMonth - start.getDate() + now.getDate();
-    }
     
     // Ajustar si el mes actual es menor que el mes de inicio
     if (months < 0) {
@@ -81,11 +76,20 @@ function calculateTime() {
         months += 12;
     }
     
+    // Ajustar si el día actual es menor que el día de inicio
+    if (now.getDate() < start.getDate()) {
+        months--;
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+    }
+    
     // Asegurar valores no negativos
     return {
         years: Math.max(0, years),
         months: Math.max(0, months),
-        days: Math.max(0, days)
+        days: Math.max(0, totalDays) // Total de días desde la fecha de inicio
     };
 }
 
@@ -229,4 +233,5 @@ function createParticle(x, y) {
     
     animate();
 }
+
 
